@@ -1,0 +1,16 @@
+﻿{
+  "permissions": {
+    "allow": [
+      "Bash(npm run:*)",
+      "Bash(npx tsx:*)",
+      "Bash(npx drizzle-kit:*)",
+      "Bash(npx vitest:*)",
+      "Bash(npx playwright test:*)",
+      "Bash(sqlite3 ./data/lol-stats.db:*)"
+    ],
+    "deny": [
+      "Read(./.env.local)",
+      "Read(./.env)"
+    ]
+  }
+}
