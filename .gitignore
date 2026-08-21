@@ -1,0 +1,35 @@
+# Secrets — jamais commités
+.env
+.env.local
+.env.*.local
+
+# Base de données et journaux d'ingestion
+/data/*.db
+/data/*.db-shm
+/data/*.db-wal
+/data/logs/
+/data/.ingest.lock
+
+# Assets téléchargés (regénérables via npm run sync-assets)
+/public/assets/ddragon/
+
+# Node / Next
+node_modules/
+.next/
+out/
+next-env.d.ts
+*.tsbuildinfo
+
+# Tests
+/test-results/
+/playwright-report/
+/blob-report/
+/coverage/
+
+# Système
+.DS_Store
+Thumbs.db
+*.log
+
+# Claude Code — local, non partagé
+.claude/settings.local.json
