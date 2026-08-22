@@ -1,43 +1,108 @@
-// Collecteur complet livré en L1 (docs/TASKS.md § L1, docs/ARCHITECTURE.md § 3).
-// Ce placeholder ne fait qu'un appel Riot : vérifier que la clé est lue et
-// valide, sans consommer de quota au-delà de ce seul appel.
-import { config } from "dotenv";
+// Le collecteur — TASKS.md § L1, docs/ARCHITECTURE.md § 3.
+// Process Node autonome, sans Next. Seul composant qui détient la clé Riot
+// en dehors du serveur. Codes de sortie : docs/ARCHITECTURE.md § 9.
+import { config as loadDotenv } from "dotenv";
+loadDotenv({ path: ".env.local" });
 
-config({ path: ".env.local" });
+import { openDb } from "@/db/client";
+import { RiotClient } from "@/lib/riot/client";
+import { ExpiredApiKeyError, RateLimitExhaustedError } from "@/lib/riot/errors";
+import { RiotRateLimiter } from "@/lib/riot/limiter";
+import { ConfigError, loadConfig } from "./ingest/config";
+import { acquireLock } from "./ingest/lock";
+import { runIngest } from "./ingest/run";
 
-const REQUIRED_ENV = [
-  "RIOT_API_KEY",
-  "RIOT_GAME_NAME",
-  "RIOT_TAG_LINE",
-  "RIOT_PLATFORM",
-  "RIOT_REGION",
-] as const;
+function parseMaxMatches(argv: string[]): number | undefined {
+  for (const arg of argv) {
+    const match = /^--limit=(\d+)$/.exec(arg);
+    if (match) return Number(match[1]);
+  }
+  return undefined;
+}
 
-function main(): void {
-  const missing = REQUIRED_ENV.filter((name) => !process.env[name]?.trim());
-  if (missing.length > 0) {
-    console.error(
-      `Configuration invalide : variable(s) manquante(s) dans .env.local : ${missing.join(", ")}`,
-    );
-    process.exitCode = 2;
+async function main(): Promise<void> {
+  let config;
+  try {
+    config = loadConfig();
+  } catch (err) {
+    if (err instanceof ConfigError) {
+      console.error(`Configuration invalide : ${err.message}`);
+      process.exitCode = 2;
+      return;
+    }
+    throw err;
+  }
+
+  const lock = acquireLock(config.lockPath);
+  if (lock === "already-running") {
+    console.log("Un run est déjà en cours (verrou frais < 2h) — sortie sans action.");
+    process.exitCode = 0;
     return;
   }
 
-  const key = process.env.RIOT_API_KEY!;
-  if (key.includes("xxxx")) {
-    console.error(
-      "RIOT_API_KEY dans .env.local est encore la valeur d'exemple — coller une vraie clé.",
-    );
-    process.exitCode = 2;
-    return;
-  }
+  let released = false;
+  const releaseOnce = (): void => {
+    if (released) return;
+    released = true;
+    lock.release();
+  };
+  process.on("exit", releaseOnce);
+  process.on("SIGINT", () => {
+    releaseOnce();
+    process.exit(130);
+  });
+  process.on("SIGTERM", () => {
+    releaseOnce();
+    process.exit(143);
+  });
 
-  console.log(
-    `RIOT_API_KEY lue (${key.slice(0, 9)}…, ${key.length} caractères). ` +
-      `Compte suivi : ${process.env.RIOT_GAME_NAME}#${process.env.RIOT_TAG_LINE} ` +
-      `(${process.env.RIOT_PLATFORM}/${process.env.RIOT_REGION}).`,
-  );
-  console.log("Collecteur complet (découverte, récupération, snapshot de rang) livré en L1.");
+  const { sqlite, db } = openDb(config.dbPath);
+
+  try {
+    const apiCallCounter = { count: 0 };
+    const limiter = new RiotRateLimiter();
+    const client = new RiotClient({
+      apiKey: config.apiKey,
+      platform: config.platform,
+      region: config.region,
+      limiter,
+      onApiCall: () => {
+        apiCallCounter.count++;
+      },
+    });
+
+    const maxMatches = parseMaxMatches(process.argv.slice(2));
+    if (maxMatches != null) {
+      console.log(`Run limité à ${maxMatches} match(s) au total (--limit).`);
+    }
+
+    const summary = await runIngest(
+      { db, client, limiter, apiCallCounter, config },
+      { maxMatches },
+    );
+
+    console.log(
+      `Run terminé (${summary.status}) — découverts: ${summary.matchesDiscovered}, ` +
+        `écrits: ${summary.matchesWritten}, échecs: ${summary.matchesFailed}, ` +
+        `snapshots de rang: ${summary.rankSnapshotsWritten}, ` +
+        `appels Riot: ${summary.apiCallCount}, attente rate limit: ${summary.rateLimitWaitMs}ms.`,
+    );
+    process.exitCode = 0;
+  } catch (err) {
+    if (err instanceof ExpiredApiKeyError) {
+      console.error(err.message);
+      process.exitCode = 3;
+    } else if (err instanceof RateLimitExhaustedError) {
+      console.error(err.message);
+      process.exitCode = 4;
+    } else {
+      console.error("Erreur inattendue pendant le run :", err);
+      process.exitCode = 1;
+    }
+  } finally {
+    sqlite.close();
+    releaseOnce();
+  }
 }
 
 main();
