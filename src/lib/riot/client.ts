@@ -10,6 +10,7 @@ import {
   matchIdsDtoSchema,
 } from "./dto";
 import {
+  AbortedGameError,
   ExpiredApiKeyError,
   NotFoundError,
   RateLimitExhaustedError,
@@ -50,6 +51,8 @@ export interface RiotClientOptions {
   fetchImpl?: typeof fetch;
   /** Appelé une fois par requête HTTP effectivement envoyée (compteur d'appels). */
   onApiCall?: (methodKey: string) => void;
+  /** Appelé à chaque 429 reçu, avant l'attente sur Retry-After (supervision). */
+  onRateLimited?: (methodKey: string) => void;
 }
 
 export class RiotClient {
@@ -87,11 +90,14 @@ export class RiotClient {
 
         this.opts.limiter.updateFromHeaders(methodKey, res.headers);
 
-        if (res.status === 403) throw new ExpiredApiKeyError(url);
+        // 401 = clé absente/mal formée, 403 = clé bien formée mais refusée
+        // (expirée, blacklistée) : les deux signifient « clé à recoller ».
+        if (res.status === 401 || res.status === 403) throw new ExpiredApiKeyError(url, res.status);
         if (res.status === 404) throw new NotFoundError(url);
 
         if (res.status === 429) {
           attempt429++;
+          this.opts.onRateLimited?.(methodKey);
           if (attempt429 > MAX_429_RETRIES) throw new RateLimitExhaustedError(url, attempt429);
           const retryAfterS = Number(res.headers.get("retry-after") ?? "1");
           await sleep(retryAfterS * 1_000 + 250);
@@ -141,6 +147,13 @@ export class RiotClient {
   async getMatchById(matchId: string): Promise<{ dto: MatchDto; raw: unknown }> {
     const url = `${this.regionBase()}/lol/match/v5/matches/${matchId}`;
     const json = await this.requestJson(url, "match-by-id");
+
+    const info = (json as { info?: { endOfGameResult?: string; participants?: unknown[] } } | null)
+      ?.info;
+    if (info?.endOfGameResult?.startsWith("Abort_") && (info.participants?.length ?? 0) === 0) {
+      throw new AbortedGameError(url, info.endOfGameResult);
+    }
+
     return { dto: parseOrThrow(matchDtoSchema, json, url), raw: json };
   }
 

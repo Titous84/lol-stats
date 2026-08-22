@@ -33,22 +33,23 @@ export function filterUnknownMatchIds(db: LolStatsDb, ids: string[]): string[] {
   return ids.filter((id) => !knownSet.has(id));
 }
 
-/** `kind` par défaut = http_404 : c'est le seul échec définitif — les autres
- *  (5xx, parse_error) sont réessayés au run suivant (docs/DATA-MODEL.md
- *  § « ingest_failures »). */
+const PERMANENT_FAILURE_KINDS = new Set(["http_404", "aborted_game"]);
+
+/** http_404 et aborted_game sont définitifs — les autres (5xx, parse_error)
+ *  sont réessayés au run suivant (docs/DATA-MODEL.md § « ingest_failures »). */
 export function isPermanentlyFailed(db: LolStatsDb, matchId: string): boolean {
   const row = db
-    .select({ matchId: ingestFailures.matchId })
+    .select({ kind: ingestFailures.kind })
     .from(ingestFailures)
-    .where(and(eq(ingestFailures.matchId, matchId), eq(ingestFailures.kind, "http_404")))
+    .where(eq(ingestFailures.matchId, matchId))
     .get();
-  return row != null;
+  return row != null && PERMANENT_FAILURE_KINDS.has(row.kind);
 }
 
 export function recordFailure(
   db: LolStatsDb,
   matchId: string,
-  kind: "http_404" | "http_5xx" | "parse_error" | "rate_limited",
+  kind: "http_404" | "http_5xx" | "parse_error" | "rate_limited" | "aborted_game",
   detail: string | null,
   nowIso: string,
 ): void {

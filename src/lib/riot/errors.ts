@@ -1,11 +1,11 @@
 // Erreurs typées du client Riot — docs/ARCHITECTURE.md § 3-4.
 // scripts/ingest.ts les traduit en codes de sortie (docs/ARCHITECTURE.md § 9).
 
-/** 403 — clé absente, invalide ou expirée. Jamais de réessai. */
+/** 401/403 — clé absente, mal formée, invalide ou expirée. Jamais de réessai. */
 export class ExpiredApiKeyError extends Error {
-  constructor(url: string) {
+  constructor(url: string, status: number) {
     super(
-      `Clé Riot refusée (403) sur ${url}. Une clé de développement expire toutes ` +
+      `Clé Riot refusée (${status}) sur ${url}. Une clé de développement expire toutes ` +
         `les 24 h : recoller une clé fraîche dans .env.local depuis ` +
         `https://developer.riotgames.com/.`,
     );
@@ -38,6 +38,19 @@ export class NotFoundError extends Error {
   constructor(url: string) {
     super(`Ressource introuvable (404) : ${url}`);
     this.name = "NotFoundError";
+  }
+}
+
+/** `info.endOfGameResult` commence par "Abort_" et participants/teams sont
+ *  vides : partie avortée côté Riot (crash serveur, etc.). Riot n'a jamais eu
+ *  ces données et n'en aura jamais — définitif, comme un 404. */
+export class AbortedGameError extends Error {
+  constructor(url: string, endOfGameResult: string) {
+    super(
+      `Partie avortée côté Riot (${endOfGameResult}) sur ${url} — aucune donnée ` +
+        `à collecter, jamais réessayée.`,
+    );
+    this.name = "AbortedGameError";
   }
 }
 

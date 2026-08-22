@@ -60,14 +60,20 @@ async function main(): Promise<void> {
 
   try {
     const apiCallCounter = { count: 0 };
+    const callsByMethod = new Map<string, number>();
+    let rateLimitedCount = 0;
     const limiter = new RiotRateLimiter();
     const client = new RiotClient({
       apiKey: config.apiKey,
       platform: config.platform,
       region: config.region,
       limiter,
-      onApiCall: () => {
+      onApiCall: (methodKey) => {
         apiCallCounter.count++;
+        callsByMethod.set(methodKey, (callsByMethod.get(methodKey) ?? 0) + 1);
+      },
+      onRateLimited: () => {
+        rateLimitedCount++;
       },
     });
 
@@ -76,10 +82,21 @@ async function main(): Promise<void> {
       console.log(`Run limité à ${maxMatches} match(s) au total (--limit).`);
     }
 
-    const summary = await runIngest(
-      { db, client, limiter, apiCallCounter, config },
-      { maxMatches },
-    );
+    const progressLine = (): string => {
+      const perMethod = [...callsByMethod.entries()]
+        .map(([k, n]) => `${k}=${n}`)
+        .join(", ");
+      return `[progression] appels: ${perMethod || "aucun"} | 429: ${rateLimitedCount}`;
+    };
+    const progressTimer = setInterval(() => console.log(progressLine()), 5_000);
+
+    let summary;
+    try {
+      summary = await runIngest({ db, client, limiter, apiCallCounter, config }, { maxMatches });
+    } finally {
+      clearInterval(progressTimer);
+      console.log(progressLine());
+    }
 
     console.log(
       `Run terminé (${summary.status}) — découverts: ${summary.matchesDiscovered}, ` +

@@ -4,6 +4,7 @@
 import type { LolStatsDb } from "@/db/client";
 import type { RiotClient } from "@/lib/riot/client";
 import {
+  AbortedGameError,
   ExpiredApiKeyError,
   NotFoundError,
   RateLimitExhaustedError,
@@ -142,6 +143,8 @@ export async function runIngest(
           const nowIso = new Date().toISOString();
           if (err instanceof NotFoundError) {
             recordFailure(db, matchId, "http_404", err.message, nowIso);
+          } else if (err instanceof AbortedGameError) {
+            recordFailure(db, matchId, "aborted_game", err.message, nowIso);
           } else if (err instanceof UnexpectedShapeError) {
             recordFailure(db, matchId, "parse_error", err.message, nowIso);
           } else if (err instanceof RiotServerError) {
