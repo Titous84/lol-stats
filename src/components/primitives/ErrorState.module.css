@@ -24,8 +24,9 @@
 }
 
 .glyphMark {
+  /* Glyphe d'icône décoratif (aria-hidden), pas un libellé : police de texte,
+     pas Display (CLAUDE.md § 2.2 réserve Display aux en-têtes / libellés KPI). */
   transform: rotate(-45deg);
-  font-family: var(--font-display);
   font-weight: 700;
   font-size: var(--text-md);
   line-height: 1;

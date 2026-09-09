@@ -1,15 +1,17 @@
 import { Archivo, Inter, JetBrains_Mono } from "next/font/google";
 
 /**
- * Archivo Expanded n'est pas une famille séparée dans Google Fonts : c'est
- * la police variable Archivo sur son axe `wdth` au maximum (125 = "expanded").
- * L'axe variable oblige à charger `weight: "variable"` (tout l'axe wght) ;
- * seules les graisses 600/700 sont utilisées côté CSS pour le rôle display
- * (CLAUDE.md § 2.2), via `font-weight` — la largeur via `font-stretch: expanded`.
+ * Archivo Expanded n'est pas une famille séparée : c'est la police variable
+ * Archivo, axe `wdth` (62–125, défaut 100) poussé au max via `font-stretch`.
+ * `axes: ["wdth"]` embarque cet axe dans le fichier auto-hébergé — sans lui,
+ * seul `wght` est téléchargé et `font-stretch: expanded` serait inerte.
+ * `weight` est omis : pour une police variable, next/font résout tout l'axe
+ * `wght` (100–900) tout seul (doc : "If loading a variable font, you don't
+ * need to specify the font weight"). Côté CSS : `font-stretch: expanded` pour
+ * la largeur, `font-weight: 600/700` pour le rôle display (CLAUDE.md § 2.2).
  */
 export const archivoExpanded = Archivo({
   subsets: ["latin"],
-  weight: "variable",
   axes: ["wdth"],
   variable: "--font-archivo-expanded",
   display: "swap",
