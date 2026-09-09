@@ -1,0 +1,339 @@
+.page {
+  min-height: 100%;
+  padding: var(--space-6) var(--space-6) var(--space-8);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8);
+  max-width: 1120px;
+  margin: 0 auto;
+}
+
+.pageHeader {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding-bottom: var(--space-4);
+  border-bottom: 1px solid var(--line);
+}
+
+.pageTitle {
+  font-family: var(--font-display);
+  font-stretch: expanded;
+  font-weight: 700;
+  font-size: var(--text-display-lg);
+  letter-spacing: var(--tracking-display);
+  text-transform: uppercase;
+  color: var(--frost);
+}
+
+.pageSubtitle {
+  font-size: var(--text-sm);
+  color: var(--mist);
+  max-width: 72ch;
+}
+
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.sectionTitle {
+  font-family: var(--font-display);
+  font-stretch: expanded;
+  font-weight: 600;
+  font-size: var(--text-display-md);
+  letter-spacing: var(--tracking-display);
+  text-transform: uppercase;
+  color: var(--frost);
+}
+
+.sectionNote {
+  font-size: var(--text-sm);
+  color: var(--mist);
+  max-width: 72ch;
+}
+
+/* --- Couleurs --- */
+
+.swatchGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: var(--space-3);
+}
+
+.swatchCard {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  background: var(--surface);
+}
+
+.swatchColor {
+  height: 56px;
+}
+
+.swatchInfo {
+  padding: var(--space-2) var(--space-3) var(--space-3);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.swatchToken {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  color: var(--frost);
+}
+
+.swatchHex {
+  font-family: var(--font-mono);
+  font-feature-settings: "zero";
+  font-size: var(--text-xs);
+  color: var(--mist);
+}
+
+.swatchMeaning {
+  font-size: var(--text-xs);
+  color: var(--mist);
+  margin-top: 2px;
+}
+
+.divergeBar {
+  height: 40px;
+  border-radius: var(--radius-md);
+  background: var(--diverge-scale);
+  border: 1px solid var(--line);
+}
+
+.divergeLabels {
+  display: flex;
+  justify-content: space-between;
+  font-family: var(--font-mono);
+  font-feature-settings: "zero";
+  font-size: var(--text-xs);
+  color: var(--mist);
+}
+
+/* --- Typographie --- */
+
+.typeGrid {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.typeSpecimen {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-4);
+  padding: var(--space-3) 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.typeSpecimen:last-child {
+  border-bottom: none;
+}
+
+.typeLabel {
+  width: 180px;
+  flex-shrink: 0;
+  font-size: var(--text-xs);
+  color: var(--mist);
+}
+
+.typeSample--display {
+  font-family: var(--font-display);
+  font-stretch: expanded;
+  font-weight: 700;
+  font-size: var(--text-display-lg);
+  letter-spacing: var(--tracking-display);
+  text-transform: uppercase;
+  color: var(--frost);
+}
+
+.typeSample--text {
+  font-family: var(--font-text);
+  font-size: var(--text-md);
+  color: var(--frost);
+}
+
+.typeSample--mono {
+  font-family: var(--font-mono);
+  font-feature-settings: "zero";
+  font-size: var(--text-md);
+  color: var(--frost);
+  font-variant-numeric: tabular-nums;
+}
+
+/* --- Densité --- */
+
+.densityDemo {
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+
+.densityRow {
+  height: var(--row-height);
+  display: flex;
+  align-items: center;
+  padding: 0 var(--space-3);
+  font-size: var(--text-sm);
+  border-bottom: 1px solid var(--line);
+  color: var(--frost);
+}
+
+.densityRow:nth-child(even) {
+  background: var(--raised);
+}
+
+.densityRow:last-child {
+  border-bottom: none;
+}
+
+.densityLegend {
+  display: flex;
+  gap: var(--space-6);
+  font-size: var(--text-xs);
+  color: var(--mist);
+  font-family: var(--font-mono);
+  font-feature-settings: "zero";
+}
+
+/* --- Grilles de primitives --- */
+
+.moduleGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: var(--module-gutter);
+}
+
+.tileGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: var(--module-gutter);
+}
+
+.controlRow {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+}
+
+/* Chrome d'interface générique : jamais --self, réservé à l'identité « moi » (§ 2.1 règle 2). */
+.button {
+  font-family: var(--font-text);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--void);
+  background: var(--frost);
+  padding: var(--space-2) var(--space-4);
+  border-radius: var(--radius-sm);
+  transition: opacity var(--duration-fast) var(--ease-standard);
+}
+
+.button:hover {
+  opacity: 0.85;
+}
+
+.buttonSecondary {
+  font-family: var(--font-text);
+  font-size: var(--text-sm);
+  font-weight: 500;
+  color: var(--frost);
+  background: transparent;
+  padding: var(--space-2) var(--space-4);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  transition: border-color var(--duration-fast) var(--ease-standard);
+}
+
+.buttonSecondary:hover {
+  border-color: var(--mist);
+}
+
+.badgeRow {
+  display: flex;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+}
+
+.pastille {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  display: inline-block;
+  flex-shrink: 0;
+}
+
+.pastille--win {
+  background: var(--mist);
+}
+
+.pastille--loss {
+  background: transparent;
+  border: 1.5px solid var(--mist);
+}
+
+.deltaCell--win {
+  color: var(--win);
+  font-weight: 600;
+}
+
+.deltaCell--loss {
+  color: var(--loss);
+  font-weight: 600;
+}
+
+.stateGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: var(--module-gutter);
+}
+
+.focusRow {
+  display: flex;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+}
+
+.focusLink {
+  font-size: var(--text-sm);
+  color: var(--frost);
+  padding: var(--space-2) var(--space-3);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+}
+
+/* --- Mouvement --- */
+
+.staggerGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: var(--space-3);
+}
+
+.staggerItem {
+  height: 64px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--line);
+  background: var(--surface);
+  animation: stagger-in var(--duration-base) var(--ease-standard) backwards;
+  animation-delay: calc(var(--stagger-index, 0) * var(--duration-stagger-step));
+}
+
+@keyframes stagger-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

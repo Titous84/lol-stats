@@ -1,0 +1,41 @@
+.state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-3);
+  padding: var(--space-8) var(--space-4);
+  text-align: center;
+  border: 1px dashed var(--line);
+  border-radius: var(--radius-md);
+  color: var(--mist);
+}
+
+.glyph {
+  width: 32px;
+  height: 32px;
+  border: 1px solid var(--mist);
+  border-radius: var(--radius-sm);
+  transform: rotate(45deg);
+  opacity: 0.6;
+}
+
+.message {
+  font-size: var(--text-sm);
+  max-width: 32ch;
+}
+
+.action {
+  font-family: var(--font-text);
+  font-size: var(--text-sm);
+  font-weight: 500;
+  color: var(--frost);
+  padding: var(--space-2) var(--space-4);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  transition: border-color var(--duration-fast) var(--ease-standard);
+}
+
+.action:hover {
+  border-color: var(--mist);
+}

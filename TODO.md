@@ -134,3 +134,6 @@ Détail et recommandation : `docs/HANDOFF.md` § 1.3.
 la racine du workspace alors que la convention impose `Projects\...`.
 **Aucun n'a été déplacé.** Procédure de migration proposée :
 `docs/HANDOFF.md` § 4, question C.
+
+
+Corriger l'encodage des journaux d'ingestion (data/logs) — accents illisibles.

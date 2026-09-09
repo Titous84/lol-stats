@@ -328,6 +328,7 @@ avec la documentation Riot.
 | Ordonnancement | Planificateur de tâches Windows | `node-cron` dans le serveur web | L'ingestion doit tourner site fermé. |
 | Timelines | v2, backfill ciblé | v1 | Double le nombre d'appels sur une clé à 100 req/2 min. |
 | Assets | Data Dragon téléchargé en local | Hotlink CDN Riot | Fonctionnement hors ligne, pas de dépendance réseau à l'affichage. |
+| `better-sqlite3` | Épinglé `12.11.1` (exact) | Rester en `^11.10.0` + installer VS Build Tools C++ | La 11.x n'a pas de prebuild pour Node 24 (NODE_MODULE_VERSION 137) ; la 12.x en publie un (`better-sqlite3-v12.11.1-node-v137-win32-x64`), ce qui **supprime la dépendance à un compilateur C++** sur le poste. Déclencheur : montée de Node en `v24.19.0`. `drizzle-orm@0.45.2` déclare `peerDependencies.better-sqlite3: ">=7"` → 12.x compatible. Épinglé exact car aucun prebuild ne doit pouvoir changer sous nos pieds à un `npm install`. |
 
 ---
 

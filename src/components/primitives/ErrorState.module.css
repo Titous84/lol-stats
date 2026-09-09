@@ -1,0 +1,53 @@
+.state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-3);
+  padding: var(--space-8) var(--space-4);
+  text-align: center;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  background: var(--raised);
+  color: var(--frost);
+}
+
+.glyph {
+  width: 32px;
+  height: 32px;
+  border: 1px solid var(--frost);
+  border-radius: var(--radius-sm);
+  transform: rotate(45deg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.glyphMark {
+  transform: rotate(-45deg);
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: var(--text-md);
+  line-height: 1;
+}
+
+.message {
+  font-size: var(--text-sm);
+  color: var(--mist);
+  max-width: 32ch;
+}
+
+.action {
+  font-family: var(--font-text);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--frost);
+  padding: var(--space-2) var(--space-4);
+  border: 1px solid var(--frost);
+  border-radius: var(--radius-sm);
+  transition: opacity var(--duration-fast) var(--ease-standard);
+}
+
+.action:hover {
+  opacity: 0.8;
+}

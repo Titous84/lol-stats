@@ -1,0 +1,69 @@
+.tile {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  padding: var(--space-3) var(--space-4);
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+}
+
+.label {
+  font-family: var(--font-display);
+  font-stretch: expanded;
+  font-weight: 600;
+  font-size: var(--text-display-sm);
+  letter-spacing: var(--tracking-display);
+  text-transform: uppercase;
+  color: var(--mist);
+}
+
+.valueRow {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-2);
+}
+
+.value {
+  font-family: var(--font-text);
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+  font-size: var(--text-xl);
+  color: var(--frost);
+  transition:
+    opacity var(--duration-base) var(--ease-standard),
+    transform var(--duration-base) var(--ease-standard);
+}
+
+.value--changed {
+  animation: tile-tween var(--duration-base) var(--ease-standard);
+}
+
+@keyframes tile-tween {
+  from {
+    opacity: 0.4;
+    transform: translateY(2px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.delta {
+  font-variant-numeric: tabular-nums;
+  font-size: var(--text-sm);
+  font-weight: 500;
+}
+
+.delta--win {
+  color: var(--win);
+}
+
+.delta--loss {
+  color: var(--loss);
+}
+
+.delta--neutral {
+  color: var(--mist);
+}

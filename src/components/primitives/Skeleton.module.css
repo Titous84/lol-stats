@@ -1,0 +1,38 @@
+.skeleton {
+  background: linear-gradient(90deg, var(--raised) 0%, var(--line) 50%, var(--raised) 100%);
+  background-size: 200% 100%;
+  border-radius: var(--radius-sm);
+  animation: skeleton-sweep var(--duration-skeleton-sweep) ease-in-out infinite;
+}
+
+/* --duration-skeleton-sweep tombe à 0ms sous reduced-motion (tokens.css) ; on coupe aussi la boucle elle-même. */
+@media (prefers-reduced-motion: reduce) {
+  .skeleton {
+    animation: none;
+    background: var(--raised);
+  }
+}
+
+@keyframes skeleton-sweep {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+.module {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  padding: var(--module-padding);
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+}
+
+.moduleRow {
+  display: flex;
+  gap: var(--space-3);
+}

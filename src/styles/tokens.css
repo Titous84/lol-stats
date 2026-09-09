@@ -1,0 +1,104 @@
+/*
+ * Tokens — La Faille (CLAUDE.md § 2.1, § 2.2, § 2.3, § 2.5)
+ * Source de vérité unique pour couleurs, typographie, densité et mouvement.
+ * Aucune valeur ci-dessous ne doit être dupliquée en dur ailleurs.
+ */
+
+:root {
+  /* --- Neutres (le châssis) --- */
+  --void: #0b0f17;
+  --surface: #141a26;
+  --raised: #1e2736;
+  --line: #232c3c;
+  --mist: #98a3b5;
+  --frost: #e6eaf2;
+
+  /* --- Accents sémantiques — un sens chacun, jamais interchangés --- */
+  --self: #e9b64c; /* identité : « moi » — jamais victoire, jamais valeur saillante */
+  --rival: #a88ff5; /* l'adversaire en vue comparative — toujours + hachure */
+  --win: #45c08d; /* écarts agrégés au-dessus de la référence */
+  --loss: #e8837a; /* écarts agrégés en dessous de la référence */
+  --side-blue: #5aa2f0; /* côté bleu de la carte — jamais « victoire » */
+  --side-red: #f0655a; /* côté rouge de la carte — jamais « défaite » */
+  --focus: #e6eaf2; /* anneau de focus clavier uniquement */
+
+  /* --- Échelle divergente (heatmaps de winrate, deltas), centrée sur la référence --- */
+  --diverge-loss-strong: #e8837a;
+  --diverge-loss-soft: #8b6e77;
+  --diverge-neutral: #232c3c; /* = --line */
+  --diverge-win-soft: #3c7c76;
+  --diverge-win-strong: #45c08d;
+  --diverge-scale: linear-gradient(
+    90deg,
+    var(--diverge-loss-strong) 0%,
+    var(--diverge-loss-soft) 25%,
+    var(--diverge-neutral) 50%,
+    var(--diverge-win-soft) 75%,
+    var(--diverge-win-strong) 100%
+  );
+
+  /* --- Typographie : 3 rôles --- */
+  --font-display: var(--font-archivo-expanded), "Arial Narrow", sans-serif;
+  --font-text: var(--font-inter), system-ui, sans-serif;
+  --font-mono: var(--font-jetbrains-mono), ui-monospace, "Cascadia Code", monospace;
+
+  --text-xs: 11px;
+  --text-sm: 13px;
+  --text-base: 14px;
+  --text-md: 15px;
+  --text-lg: 18px;
+  --text-xl: 22px;
+  --text-display-sm: 13px;
+  --text-display-md: 15px;
+  --text-display-lg: 20px;
+
+  --tracking-display: 0.06em;
+  --line-height-tight: 1.2;
+  --line-height-base: 1.5;
+
+  /* --- Échelle de densité (§ 2.3) --- */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+
+  --row-height: 32px;
+  --module-gutter: 16px;
+  --module-padding: 16px;
+  --module-padding-compact: 12px;
+
+  --radius-sm: 6px;
+  --radius-md: 10px;
+
+  /* --- Mouvement, centralisé --- */
+  --ease-standard: cubic-bezier(0.2, 0, 0, 1);
+  --duration-instant: 0ms;
+  --duration-fast: 150ms;
+  --duration-base: 250ms;
+  --duration-stagger-step: 40ms;
+  --duration-highlight-flash: 400ms;
+  --duration-skeleton-sweep: 1400ms;
+
+  /* --- Focus --- */
+  --focus-ring-width: 2px;
+  --focus-ring-offset: 2px;
+}
+
+/*
+ * prefers-reduced-motion traité une seule fois, à la racine (§ 2.5).
+ * Tout composant qui lit --duration-* via transition/animation obéit
+ * automatiquement, sans logique dupliquée ailleurs.
+ */
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --duration-instant: 0ms;
+    --duration-fast: 0ms;
+    --duration-base: 0ms;
+    --duration-stagger-step: 0ms;
+    --duration-highlight-flash: 0ms;
+    --duration-skeleton-sweep: 0ms;
+  }
+}
