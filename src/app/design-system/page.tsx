@@ -63,7 +63,7 @@ const MATCH_COLUMNS: DataTableColumn<MatchRow>[] = [
     header: "Résultat",
     width: "80px",
     align: "right",
-    render: (r) => <span className={`${styles.pastille} ${r.won ? styles["pastille--win"] : styles["pastille--loss"]}`} aria-label={r.won ? "Victoire" : "Défaite"} />,
+    render: (r) => <span className={`${styles.pastille} ${r.won ? styles["pastille--win"] : styles["pastille--loss"]}`} role="img" aria-label={r.won ? "Victoire" : "Défaite"} />,
   },
   { key: "kda", header: "KDA", width: "90px", align: "right", render: (r) => r.kda },
   {

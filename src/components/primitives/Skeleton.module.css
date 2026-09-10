@@ -1,24 +1,37 @@
 .skeleton {
-  background: linear-gradient(90deg, var(--raised) 0%, var(--line) 50%, var(--raised) 100%);
-  background-size: 200% 100%;
+  position: relative;
+  overflow: hidden;
+  background: var(--raised);
   border-radius: var(--radius-sm);
+}
+
+/*
+ * Balayage lumineux : bande sur ::after animée en transform: translateX
+ * (propriété compositée, § 2.5) — jamais background-position en boucle
+ * (repaint continu). overflow: hidden sur le conteneur clippe la bande.
+ */
+.skeleton::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent 0%, var(--line) 50%, transparent 100%);
+  transform: translateX(-100%);
   animation: skeleton-sweep var(--duration-skeleton-sweep) ease-in-out infinite;
 }
 
-/* --duration-skeleton-sweep tombe à 0ms sous reduced-motion (tokens.css) ; on coupe aussi la boucle elle-même. */
+/* --duration-skeleton-sweep tombe à 0ms sous reduced-motion (tokens.css) ; on retire aussi la bande. */
 @media (prefers-reduced-motion: reduce) {
-  .skeleton {
-    animation: none;
-    background: var(--raised);
+  .skeleton::after {
+    display: none;
   }
 }
 
 @keyframes skeleton-sweep {
   0% {
-    background-position: 200% 0;
+    transform: translateX(-100%);
   }
   100% {
-    background-position: -200% 0;
+    transform: translateX(100%);
   }
 }
 

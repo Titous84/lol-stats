@@ -4,7 +4,7 @@
   gap: var(--space-1);
   padding: 2px var(--space-2);
   border-radius: 999px;
-  font-size: var(--text-xs);
+  font-size: var(--text-sm);
   font-variant-numeric: tabular-nums;
   color: var(--frost);
   border: 1px solid var(--line);
