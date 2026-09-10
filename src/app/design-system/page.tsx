@@ -249,6 +249,7 @@ export default function DesignSystemPage() {
           columns={MATCH_COLUMNS}
           rows={tableEmpty ? [] : MATCH_ROWS}
           getRowId={(r) => r.id}
+          label="Parties récentes (démo)"
           viewportHeight={288}
           changedCells={changedCells}
           emptyMessage="Aucune partie pour ce filtre."

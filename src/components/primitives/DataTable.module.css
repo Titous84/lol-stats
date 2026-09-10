@@ -1,11 +1,16 @@
 .wrapper {
   border: 1px solid var(--line);
   border-radius: var(--radius-md);
-  overflow: hidden;
+  /* Défilement horizontal unique pour tout le tableau : en-tête et corps
+     restent alignés. Le vertical est géré par .viewport (virtualisation). */
+  overflow-x: auto;
+  overflow-y: hidden;
 }
 
 .headerRow {
   display: flex;
+  width: max-content;
+  min-width: 100%;
   background: var(--raised);
   border-bottom: 1px solid var(--line);
 }
@@ -31,8 +36,17 @@
 }
 
 .viewport {
+  width: max-content;
+  min-width: 100%;
   overflow-y: auto;
+  overflow-x: hidden;
   overscroll-behavior: contain;
+}
+
+/* Anneau de focus en retrait : posé vers l'extérieur il serait rogné par le
+   clip de .wrapper. Couleur/épaisseur héritées de :focus-visible global. */
+.viewport:focus-visible {
+  outline-offset: calc(-1 * var(--focus-ring-width));
 }
 
 .spacer {

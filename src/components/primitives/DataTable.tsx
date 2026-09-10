@@ -1,7 +1,15 @@
 "use client";
 
-import { useMemo, useRef, useState, type ReactNode, type UIEvent } from "react";
+import {
+  useMemo,
+  useRef,
+  useState,
+  type KeyboardEvent,
+  type ReactNode,
+  type UIEvent,
+} from "react";
 import styles from "./DataTable.module.css";
+import { virtualWindow } from "./virtual-window";
 
 export interface DataTableColumn<T> {
   key: string;
@@ -16,6 +24,8 @@ interface DataTableProps<T> {
   columns: DataTableColumn<T>[];
   rows: T[];
   getRowId: (row: T) => string | number;
+  /** Nom accessible du tableau — role="table" et zone de défilement clavier. */
+  label?: string;
   /** Hauteur de la fenêtre de défilement en pixels. Au-delà de 200 lignes, seules les lignes visibles sont montées. */
   viewportHeight?: number;
   /** Clés `${rowId}:${columnKey}` dont la valeur vient de changer — déclenche le flash de surlignage (§ 2.5) au lieu d'un tween. */
@@ -31,6 +41,7 @@ export function DataTable<T>({
   columns,
   rows,
   getRowId,
+  label,
   viewportHeight = 320,
   changedCells,
   emptyMessage = "Aucune ligne pour ce filtre.",
@@ -44,10 +55,13 @@ export function DataTable<T>({
     if (!shouldVirtualize) {
       return { startIndex: 0, endIndex: rows.length };
     }
-    const visibleCount = Math.ceil(viewportHeight / ROW_HEIGHT);
-    const start = Math.max(0, Math.floor(scrollTop / ROW_HEIGHT) - OVERSCAN);
-    const end = Math.min(rows.length, start + visibleCount + OVERSCAN * 2);
-    return { startIndex: start, endIndex: end };
+    return virtualWindow({
+      scrollTop,
+      rowCount: rows.length,
+      viewportHeight,
+      rowHeight: ROW_HEIGHT,
+      overscan: OVERSCAN,
+    });
   }, [scrollTop, rows.length, shouldVirtualize, viewportHeight]);
 
   const visibleRows = rows.slice(startIndex, endIndex);
@@ -60,15 +74,53 @@ export function DataTable<T>({
     }
   }
 
+  // Défilement clavier de la zone de données (WCAG 2.1.1). Écrire scrollTop
+  // déclenche l'événement `scroll` -> handleScroll -> la virtualisation monte
+  // les lignes qui entrent dans la fenêtre (même chemin que le scroll souris).
+  function handleKeyDown(event: KeyboardEvent<HTMLDivElement>) {
+    const el = viewportRef.current;
+    if (!el) return;
+    const page = Math.max(el.clientHeight - ROW_HEIGHT, ROW_HEIGHT);
+    let handled = true;
+    switch (event.key) {
+      case "ArrowDown":
+        el.scrollTop += ROW_HEIGHT;
+        break;
+      case "ArrowUp":
+        el.scrollTop -= ROW_HEIGHT;
+        break;
+      case "PageDown":
+        el.scrollTop += page;
+        break;
+      case "PageUp":
+        el.scrollTop -= page;
+        break;
+      case "Home":
+        el.scrollTop = 0;
+        break;
+      case "End":
+        el.scrollTop = el.scrollHeight;
+        break;
+      default:
+        handled = false;
+    }
+    if (handled) event.preventDefault();
+  }
+
   return (
-    <div className={styles.wrapper} role="table">
-      <div className={styles.headerRow} role="row">
+    <div
+      className={styles.wrapper}
+      role="table"
+      aria-label={label}
+      aria-rowcount={rows.length + 1}
+    >
+      <div className={styles.headerRow} role="row" aria-rowindex={1}>
         {columns.map((column) => (
           <div
             key={column.key}
             role="columnheader"
             className={column.align === "right" ? `${styles.headerCell} ${styles["headerCell--right"]}` : styles.headerCell}
-            style={{ width: column.width }}
+            style={{ width: column.width, minWidth: column.width }}
           >
             {column.header}
           </div>
@@ -85,13 +137,16 @@ export function DataTable<T>({
           className={styles.viewport}
           style={{ maxHeight: viewportHeight }}
           onScroll={handleScroll}
+          onKeyDown={handleKeyDown}
           role="rowgroup"
+          tabIndex={0}
+          aria-label={label ? `${label} — données défilables` : "Données du tableau, défilables"}
         >
           {shouldVirtualize && <div className={styles.spacer} style={{ height: topSpacer }} />}
-          {visibleRows.map((row) => {
+          {visibleRows.map((row, i) => {
             const rowId = getRowId(row);
             return (
-              <div className={styles.row} role="row" key={rowId}>
+              <div className={styles.row} role="row" key={rowId} aria-rowindex={startIndex + i + 2}>
                 {columns.map((column) => {
                   const flash = changedCells?.has(`${rowId}:${column.key}`);
                   const classes = [
@@ -103,7 +158,7 @@ export function DataTable<T>({
                     .filter(Boolean)
                     .join(" ");
                   return (
-                    <div key={column.key} role="cell" className={classes} style={{ width: column.width }}>
+                    <div key={column.key} role="cell" className={classes} style={{ width: column.width, minWidth: column.width }}>
                       {column.render(row)}
                     </div>
                   );
