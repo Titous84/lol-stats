@@ -47,6 +47,7 @@
    clip de .wrapper. Couleur/épaisseur héritées de :focus-visible global. */
 .viewport:focus-visible {
   outline-offset: calc(-1 * var(--focus-ring-width));
+  border-radius: var(--radius-md); /* coins de l'anneau alignés sur .wrapper */
 }
 
 .spacer {
@@ -104,10 +105,9 @@
 }
 
 .emptyRow {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: calc(var(--row-height) * 3);
-  color: var(--mist);
-  font-size: var(--text-sm);
+  min-width: 100%;
+}
+
+.emptyCell {
+  padding: var(--space-4);
 }

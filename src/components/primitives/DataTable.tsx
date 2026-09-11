@@ -10,6 +10,7 @@ import {
 } from "react";
 import styles from "./DataTable.module.css";
 import { virtualWindow } from "./virtual-window";
+import { EmptyState } from "./EmptyState";
 
 export interface DataTableColumn<T> {
   key: string;
@@ -33,6 +34,12 @@ interface DataTableProps<T> {
   emptyMessage?: string;
 }
 
+/**
+ * Miroir JS de --row-height (tokens.css, 32px). La virtualisation calcule en
+ * JS les hauteurs de spacer et les pas de défilement clavier — ces maths ont
+ * besoin d'un nombre, pas d'une CSS var (indisponible au SSR). Couplage
+ * volontaire : toute modif de --row-height doit être répercutée ici.
+ */
 const ROW_HEIGHT = 32;
 const OVERSCAN = 6;
 const VIRTUALIZE_THRESHOLD = 200;
@@ -112,7 +119,7 @@ export function DataTable<T>({
       className={styles.wrapper}
       role="table"
       aria-label={label}
-      aria-rowcount={rows.length + 1}
+      aria-rowcount={rows.length === 0 ? 2 : rows.length + 1}
     >
       <div className={styles.headerRow} role="row" aria-rowindex={1}>
         {columns.map((column) => (
@@ -128,8 +135,10 @@ export function DataTable<T>({
       </div>
 
       {rows.length === 0 ? (
-        <div className={styles.emptyRow} role="row">
-          {emptyMessage}
+        <div className={styles.emptyRow} role="row" aria-rowindex={2}>
+          <div role="cell" aria-colindex={1} className={styles.emptyCell}>
+            <EmptyState message={emptyMessage} />
+          </div>
         </div>
       ) : (
         <div

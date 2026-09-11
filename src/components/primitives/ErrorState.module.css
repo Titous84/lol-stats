@@ -13,8 +13,8 @@
 }
 
 .glyph {
-  width: 32px;
-  height: 32px;
+  width: var(--space-8);
+  height: var(--space-8);
   border: 1px solid var(--frost);
   border-radius: var(--radius-sm);
   transform: rotate(45deg);

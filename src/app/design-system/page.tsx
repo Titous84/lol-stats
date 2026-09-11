@@ -22,9 +22,17 @@ const NEUTRALS = [
   { token: "--frost", hex: "#E6EAF2", meaning: "Texte primaire, chiffres saillants" },
 ];
 
-const ACCENTS = [
+interface AccentSwatch {
+  token: string;
+  hex: string;
+  meaning: string;
+  /** --rival ne se montre jamais en aplat — swatch haché (CLAUDE.md § 2.4). */
+  hatched?: boolean;
+}
+
+const ACCENTS: AccentSwatch[] = [
   { token: "--self", hex: "#E9B64C", meaning: "Identité : « moi ». Rien d'autre." },
-  { token: "--rival", hex: "#A88FF5", meaning: "L'adversaire — toujours + hachure" },
+  { token: "--rival", hex: "#A88FF5", meaning: "L'adversaire — toujours + hachure", hatched: true },
   { token: "--win", hex: "#45C08D", meaning: "Écart agrégé au-dessus de la référence" },
   { token: "--loss", hex: "#E8837A", meaning: "Écart agrégé en dessous de la référence" },
   { token: "--side-blue", hex: "#5AA2F0", meaning: "Côté bleu — module « côté » uniquement" },
@@ -128,7 +136,10 @@ export default function DesignSystemPage() {
         <div className={styles.swatchGrid}>
           {ACCENTS.map((s) => (
             <div className={styles.swatchCard} key={s.token}>
-              <div className={styles.swatchColor} style={{ background: `var(${s.token})` }} />
+              <div
+                className={s.hatched ? `${styles.swatchColor} ${styles["swatchColor--hatched"]}` : styles.swatchColor}
+                style={s.hatched ? undefined : { background: `var(${s.token})` }}
+              />
               <div className={styles.swatchInfo}>
                 <span className={styles.swatchToken}>{s.token}</span>
                 <span className={styles.swatchHex}>{s.hex}</span>

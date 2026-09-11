@@ -59,11 +59,12 @@ a {
 /*
  * Anneau de focus global — visible sur tous les interactifs, sans exception.
  * Toujours --frost, jamais un accent sémantique (§ 2.1 règle 5).
+ * Pas de border-radius imposé ici : l'anneau suit le rayon propre de
+ * l'élément (rond sur une pastille, pilule sur un badge, 6px sur un bouton).
  */
 :focus-visible {
   outline: var(--focus-ring-width) solid var(--focus);
   outline-offset: var(--focus-ring-offset);
-  border-radius: var(--radius-sm);
 }
 
 :focus:not(:focus-visible) {

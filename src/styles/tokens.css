@@ -25,7 +25,7 @@
   /* --- Échelle divergente (heatmaps de winrate, deltas), centrée sur la référence --- */
   --diverge-loss-strong: #e8837a;
   --diverge-loss-soft: #8b6e77;
-  --diverge-neutral: #232c3c; /* = --line */
+  --diverge-neutral: var(--line);
   --diverge-win-soft: #3c7c76;
   --diverge-win-strong: #45c08d;
   --diverge-scale: linear-gradient(
@@ -72,13 +72,15 @@
 
   --radius-sm: 6px;
   --radius-md: 10px;
+  --radius-pill: 999px;
 
   /* --- Mouvement, centralisé --- */
   --ease-standard: cubic-bezier(0.2, 0, 0, 1);
   --duration-instant: 0ms;
   --duration-fast: 150ms;
   --duration-base: 250ms;
-  --duration-stagger-step: 40ms;
+  --duration-stagger-step: 20ms;
+  --duration-stagger-in: 180ms;
   --duration-highlight-flash: 400ms;
   --duration-skeleton-sweep: 1400ms;
 
@@ -98,6 +100,7 @@
     --duration-fast: 0ms;
     --duration-base: 0ms;
     --duration-stagger-step: 0ms;
+    --duration-stagger-in: 0ms;
     --duration-highlight-flash: 0ms;
     --duration-skeleton-sweep: 0ms;
   }

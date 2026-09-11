@@ -12,8 +12,8 @@
 }
 
 .glyph {
-  width: 32px;
-  height: 32px;
+  width: var(--space-8);
+  height: var(--space-8);
   border: 1px solid var(--mist);
   border-radius: var(--radius-sm);
   transform: rotate(45deg);
@@ -33,7 +33,6 @@
   padding: var(--space-2) var(--space-4);
   border: 1px solid var(--line);
   border-radius: var(--radius-sm);
-  transition: border-color var(--duration-fast) var(--ease-standard);
 }
 
 .action:hover {

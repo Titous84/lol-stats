@@ -137,3 +137,9 @@ la racine du workspace alors que la convention impose `Projects\...`.
 
 
 Corriger l'encodage des journaux d'ingestion (data/logs) — accents illisibles.
+
+Extraire la recette de hachure `--rival` en token `--hatch-rival` : dupliquée
+entre `ConfidenceBadge.module.css` (.swatch--uncertain) et le swatch de démo
+`.swatchColor--hatched` (page.module.css). À faire quand l'élément signature
+« La Faille » sera codé en L6 (3e consommateur). Réf. : 45°, trait 1.5px,
+période 4px.

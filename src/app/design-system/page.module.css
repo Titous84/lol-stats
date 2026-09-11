@@ -76,6 +76,22 @@
   height: 56px;
 }
 
+/*
+ * Hachure --rival — reprend exactement .swatch--uncertain de
+ * ConfidenceBadge.module.css (45°, trait 1.5px, période 4px, sans fond).
+ * Le doc de référence montre la hachure réelle, pas une approximation.
+ */
+.swatchColor--hatched {
+  color: var(--rival);
+  background-image: repeating-linear-gradient(
+    45deg,
+    currentColor 0,
+    currentColor 1.5px,
+    transparent 1.5px,
+    transparent 4px
+  );
+}
+
 .swatchInfo {
   padding: var(--space-2) var(--space-3) var(--space-3);
   display: flex;
@@ -112,8 +128,6 @@
 .divergeLabels {
   display: flex;
   justify-content: space-between;
-  font-family: var(--font-mono);
-  font-feature-settings: "zero";
   font-size: var(--text-xs);
   color: var(--mist);
 }
@@ -130,6 +144,7 @@
   display: flex;
   align-items: baseline;
   gap: var(--space-4);
+  flex-wrap: wrap;
   padding: var(--space-3) 0;
   border-bottom: 1px solid var(--line);
 }
@@ -157,14 +172,14 @@
 
 .typeSample--text {
   font-family: var(--font-text);
-  font-size: var(--text-md);
+  font-size: var(--text-base);
   color: var(--frost);
 }
 
 .typeSample--mono {
   font-family: var(--font-mono);
   font-feature-settings: "zero";
-  font-size: var(--text-md);
+  font-size: var(--text-base);
   color: var(--frost);
   font-variant-numeric: tabular-nums;
 }
@@ -200,8 +215,6 @@
   gap: var(--space-6);
   font-size: var(--text-xs);
   color: var(--mist);
-  font-family: var(--font-mono);
-  font-feature-settings: "zero";
 }
 
 /* --- Grilles de primitives --- */
@@ -250,7 +263,6 @@
   padding: var(--space-2) var(--space-4);
   border: 1px solid var(--line);
   border-radius: var(--radius-sm);
-  transition: border-color var(--duration-fast) var(--ease-standard);
 }
 
 .buttonSecondary:hover {
@@ -264,8 +276,8 @@
 }
 
 .pastille {
-  width: 8px;
-  height: 8px;
+  width: var(--space-2);
+  height: var(--space-2);
   border-radius: 50%;
   display: inline-block;
   flex-shrink: 0;
@@ -323,7 +335,7 @@
   border-radius: var(--radius-md);
   border: 1px solid var(--line);
   background: var(--surface);
-  animation: stagger-in var(--duration-base) var(--ease-standard) backwards;
+  animation: stagger-in var(--duration-stagger-in) var(--ease-standard) backwards;
   animation-delay: calc(var(--stagger-index, 0) * var(--duration-stagger-step));
 }
 
